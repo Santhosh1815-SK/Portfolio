@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- ============================================================
+     META
+============================================================ -->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Santhosh Kumar K — ML Engineer</title>
+<meta name="description" content="Santhosh Kumar K — ML Engineer based in Coimbatore. B.Tech AI &amp; ML graduate, 2025.">
+
+<!-- ============================================================
+     FONTS
+============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ================================================================
+   DESIGN TOKENS
+   Concept: "Signal" — an ML engineer reads meaning out of sparse,
+   noisy data. The whole page is built around that idea: a live
+   trace/oscilloscope line runs down the margin connecting every
+   section like a signal being read and annotated node by node.
+================================================================= */
+:root{
+  --bg:            #0A0F1C;
+  --bg-panel:      #10182B;
+  --bg-panel-2:    #141F38;
+  --line:          #22304F;
+  --text:          #E8ECF6;
+  --text-dim:      #93A0BD;
+  --text-faint:    #5C6989;
+  --accent:        #4FD8C4;   /* signal teal */
+  --accent-soft:   rgba(79,216,196,0.12);
+  --accent-2:      #8C9EFF;   /* secondary indigo-violet */
+  --accent-2-soft: rgba(140,158,255,0.12);
+
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body:    'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --maxw: 1180px;
+  --edge: 6vw;
+}
+
+*{ margin:0; padding:0; box-sizing:border-box; }
+
+html{ scroll-behavior:smooth; }
+@media (prefers-reduced-motion: reduce){
+  html{ scroll-behavior:auto; }
+  *{ animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important; scroll-behavior:auto !important; }
+}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+
+a{ color:inherit; text-decoration:none; }
+ul{ list-style:none; }
+img{ max-width:100%; display:block; }
+button{ font-family:inherit; cursor:pointer; }
+
+:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+  border-radius:4px;
+}
+
+.wrap{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding-left:var(--edge);
+  padding-right:var(--edge);
+}
+
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:0.78rem;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  color:var(--accent);
+  display:flex;
+  align-items:center;
+  gap:0.6em;
+}
+.eyebrow::before{
+  content:"";
+  width:22px; height:1px;
+  background:var(--accent);
+  display:inline-block;
+}
+
+h1,h2,h3{ font-family:var(--font-display); font-weight:600; letter-spacing:-0.01em; }
+
+.section-title{
+  font-size:clamp(1.8rem,3.4vw,2.6rem);
+  margin:0.4em 0 0.9em;
+}
+
+section{ position:relative; padding:6.5rem 0; }
+
+/* ----------------------------------------------------------------
+   SIGNAL TRACE — the signature element.
+   A vertical SVG oscilloscope-style line that runs the height of
+   the page, spiking at each section node. Fixed to the left edge
+   on wide screens, becomes a slim top progress bar on mobile.
+---------------------------------------------------------------- */
+#signalTrace{
+  position:fixed;
+  left:0; top:0;
+  width:44px; height:100vh;
+  z-index:40;
+  pointer-events:none;
+  display:flex;
+  align-items:center;
+}
+#signalTrace svg{ width:100%; height:100%; }
+#signalTrace path{
+  fill:none;
+  stroke:var(--line);
+  stroke-width:1.4;
+}
+#signalTrace path.active{
+  stroke:var(--accent);
+  filter:drop-shadow(0 0 6px rgba(79,216,196,0.55));
+}
+@media (max-width:860px){
+  #signalTrace{ display:none; }
+  #mobileProgress{
+    position:fixed; top:0; left:0; height:3px; width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    z-index:60; transition:width 0.1s linear;
+  }
+}
+@media (min-width:861px){ #mobileProgress{ display:none; } }
+
+/* ----------------------------------------------------------------
+   NAVIGATION
+---------------------------------------------------------------- */
+header#site-nav{
+  position:fixed; top:0; left:0; right:0;
+  z-index:50;
+  background:rgba(10,15,28,0.75);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent;
+  transition:border-color 0.3s ease, background 0.3s ease;
+}
+header#site-nav.scrolled{
+  border-bottom-color:var(--line);
+}
+.nav-inner{
+  max-width:var(--maxw);
+  margin:0 auto;
+  padding:1.05rem var(--edge);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.brand{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:1.1rem;
+  letter-spacing:0.02em;
+}
+.brand span{ color:var(--accent); }
+
+.nav-links{
+  display:flex;
+  gap:2.1rem;
+  font-family:var(--font-mono);
+  font-size:0.82rem;
+}
+.nav-links a{
+  color:var(--text-dim);
+  position:relative;
+  padding:0.3rem 0;
+  transition:color 0.25s ease;
+}
+.nav-links a::after{
+  content:"";
+  position:absolute; left:0; bottom:-2px;
+  width:0; height:1px;
+  background:var(--accent);
+  transition:width 0.25s ease;
+}
+.nav-links a:hover, .nav-links a.active{ color:var(--text); }
+.nav-links a.active::after{ width:100%; }
+
+.hamburger{
+  display:none;
+  flex-direction:column;
+  gap:5px;
+  background:none; border:none;
+  padding:0.4rem;
+}
+.hamburger span{
+  width:22px; height:2px;
+  background:var(--text);
+  display:block;
+  transition:transform 0.25s ease, opacity 0.25s ease;
+}
+.hamburger.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2){ opacity:0; }
+.hamburger.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
+
+@media (max-width:860px){
+  .nav-links{
+    position:fixed; top:64px; right:0;
+    height:calc(100vh - 64px);
+    width:min(72vw,300px);
+    background:var(--bg-panel);
+    border-left:1px solid var(--line);
+    flex-direction:column;
+    gap:0;
+    padding:2rem 1.8rem;
+    transform:translateX(100%);
+    transition:transform 0.3s ease;
+  }
+  .nav-links.open{ transform:translateX(0); }
+  .nav-links a{ padding:0.9rem 0; border-bottom:1px solid var(--line); font-size:0.95rem; }
+  .hamburger{ display:flex; }
+}
+
+/* ----------------------------------------------------------------
+   HERO
+---------------------------------------------------------------- */
+#hero{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  padding-top:7rem;
+  position:relative;
+  overflow:hidden;
+}
+#neuralCanvas{
+  position:absolute; inset:0;
+  width:100%; height:100%;
+  opacity:0.55;
+}
+#hero .wrap{
+  position:relative; z-index:2;
+}
+.hero-name{
+  font-size:clamp(2.6rem,7vw,5rem);
+  line-height:1.02;
+  margin:0.5rem 0 0.3rem;
+}
+.hero-role{
+  font-family:var(--font-mono);
+  font-size:clamp(1rem,2vw,1.3rem);
+  color:var(--accent-2);
+  margin-bottom:1.6rem;
+}
+.hero-meta{
+  display:flex; flex-wrap:wrap; gap:0.7rem 1.2rem;
+  font-family:var(--font-mono);
+  font-size:0.82rem;
+  color:var(--text-dim);
+  margin-bottom:2.2rem;
+}
+.hero-meta span{ display:flex; align-items:center; gap:0.5em; }
+.hero-meta .dot{ width:6px; height:6px; border-radius:50%; background:var(--accent); }
+
+.btn-row{ display:flex; flex-wrap:wrap; gap:1rem; }
+.btn{
+  font-family:var(--font-mono);
+  font-size:0.85rem;
+  padding:0.85rem 1.5rem;
+  border-radius:8px;
+  border:1px solid var(--line);
+  display:inline-flex; align-items:center; gap:0.6em;
+  transition:transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.btn-primary{
+  background:var(--accent);
+  color:#06110F;
+  border-color:var(--accent);
+  font-weight:500;
+}
+.btn-primary:hover{ transform:translateY(-2px); box-shadow:0 10px 26px -10px rgba(79,216,196,0.55); }
+.btn-ghost{ color:var(--text); }
+.btn-ghost:hover{ border-color:var(--accent-2); color:var(--accent-2); transform:translateY(-2px); }
+
+.scroll-cue{
+  position:absolute; bottom:2.2rem; left:var(--edge);
+  font-family:var(--font-mono); font-size:0.72rem; color:var(--text-faint);
+  display:flex; align-items:center; gap:0.6rem;
+  letter-spacing:0.08em;
+}
+.scroll-cue .line{ width:28px; height:1px; background:var(--text-faint); animation:pulseLine 2.4s ease-in-out infinite; }
+@keyframes pulseLine{ 0%,100%{ width:28px; } 50%{ width:10px; } }
+
+/* ----------------------------------------------------------------
+   REVEAL ANIMATION (Intersection Observer driven)
+---------------------------------------------------------------- */
+.reveal{ opacity:0; transform:translateY(26px); transition:opacity 0.7s ease, transform 0.7s ease; }
+.reveal.in{ opacity:1; transform:none; }
+.reveal-stagger > *{ opacity:0; transform:translateY(20px); transition:opacity 0.6s ease, transform 0.6s ease; }
+.reveal-stagger.in > *{ opacity:1; transform:none; }
+.reveal-stagger.in > *:nth-child(1){ transition-delay:0.05s; }
+.reveal-stagger.in > *:nth-child(2){ transition-delay:0.15s; }
+.reveal-stagger.in > *:nth-child(3){ transition-delay:0.25s; }
+.reveal-stagger.in > *:nth-child(4){ transition-delay:0.35s; }
+.reveal-stagger.in > *:nth-child(5){ transition-delay:0.45s; }
+
+/* ----------------------------------------------------------------
+   SECTION HEADER helper
+---------------------------------------------------------------- */
+.section-head{ margin-bottom:3rem; }
+.node-tag{
+  font-family:var(--font-mono);
+  font-size:0.75rem;
+  color:var(--text-faint);
+}
+
+/* ----------------------------------------------------------------
+   PROFILE / ABOUT
+---------------------------------------------------------------- */
+#profile{ background:var(--bg-panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.profile-grid{
+  display:grid;
+  grid-template-columns:1.1fr 1fr;
+  gap:4rem;
+  align-items:start;
+}
+@media (max-width:860px){ .profile-grid{ grid-template-columns:1fr; gap:2.5rem; } }
+
+.trait-word{
+  font-family:var(--font-display);
+  font-weight:700;
+  font-size:clamp(2.4rem,5.5vw,4rem);
+  line-height:1;
+  background:linear-gradient(120deg,var(--text) 30%,var(--accent) 100%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+  margin-bottom:0.6rem;
+}
+.trait-caption{
+  font-family:var(--font-mono);
+  font-size:0.82rem;
+  color:var(--text-dim);
+  max-width:32ch;
+}
+
+.fact-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1.1rem;
+}
+.fact-card{
+  background:var(--bg-panel-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:1.1rem 1.2rem;
+  transition:border-color 0.25s ease, transform 0.25s ease;
+}
+.fact-card:hover{ border-color:var(--accent-2); transform:translateY(-3px); }
+.fact-label{
+  font-family:var(--font-mono);
+  font-size:0.68rem;
+  letter-spacing:0.1em;
+  text-transform:uppercase;
+  color:var(--text-faint);
+  margin-bottom:0.4rem;
+}
+.fact-value{ font-size:0.98rem; color:var(--text); }
+
+/* ----------------------------------------------------------------
+   TIMELINE (Education)
+---------------------------------------------------------------- */
+.timeline{ position:relative; padding-left:2.4rem; }
+.timeline::before{
+  content:"";
+  position:absolute; left:6px; top:6px; bottom:6px;
+  width:1px;
+  background:var(--line);
+}
+.timeline-item{ position:relative; padding-bottom:0.5rem; }
+.timeline-item::before{
+  content:"";
+  position:absolute; left:-2.4rem; top:0.35rem;
+  width:12px; height:12px; border-radius:50%;
+  background:var(--bg);
+  border:2px solid var(--accent);
+}
+.timeline-year{
+  font-family:var(--font-mono);
+  font-size:0.78rem;
+  color:var(--accent);
+  margin-bottom:0.3rem;
+  display:block;
+}
+.timeline-card{
+  background:var(--bg-panel-2);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:1.6rem 1.8rem;
+  transition:border-color 0.25s ease;
+}
+.timeline-card:hover{ border-color:var(--accent); }
+.timeline-card h3{ font-size:1.25rem; margin-bottom:0.3rem; }
+.timeline-card .org{ color:var(--text-dim); margin-bottom:0.9rem; }
+.stat-row{ display:flex; gap:2.2rem; flex-wrap:wrap; }
+.stat{ font-family:var(--font-mono); font-size:0.82rem; color:var(--text-dim); }
+.stat b{ color:var(--text); font-size:1rem; display:block; font-family:var(--font-body); }
+
+/* ----------------------------------------------------------------
+   CERTIFICATIONS
+---------------------------------------------------------------- */
+#certifications{ background:var(--bg-panel); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.cert-card{
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1.2rem;
+  background:var(--bg-panel-2);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:1.7rem 2rem;
+  transition:border-color 0.25s ease, transform 0.25s ease;
+}
+.cert-card:hover{ border-color:var(--accent-2); transform:translateY(-3px); }
+.cert-icon{
+  width:44px; height:44px; border-radius:10px;
+  background:var(--accent-2-soft);
+  color:var(--accent-2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-mono); font-weight:600;
+  flex-shrink:0;
+}
+.cert-main{ flex:1; min-width:220px; }
+.cert-main h3{ font-size:1.1rem; margin-bottom:0.25rem; }
+.cert-main .org{ color:var(--text-dim); font-size:0.92rem; }
+.cert-year{ font-family:var(--font-mono); color:var(--text-faint); font-size:0.85rem; }
+
+/* ----------------------------------------------------------------
+   CONTACT
+---------------------------------------------------------------- */
+.contact-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:1.2rem;
+}
+.contact-card{
+  background:var(--bg-panel-2);
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:1.5rem;
+  display:flex; flex-direction:column; gap:0.7rem;
+  transition:border-color 0.25s ease, transform 0.25s ease;
+}
+.contact-card:hover{ border-color:var(--accent); transform:translateY(-3px); }
+.contact-label{
+  font-family:var(--font-mono); font-size:0.7rem; letter-spacing:0.1em; text-transform:uppercase;
+  color:var(--text-faint);
+}
+.contact-value{ font-size:1rem; word-break:break-word; }
+.contact-action{
+  margin-top:auto;
+  font-family:var(--font-mono); font-size:0.78rem; color:var(--accent);
+  background:none; border:none; text-align:left; padding:0;
+}
+.contact-action:hover{ text-decoration:underline; }
+
+/* ----------------------------------------------------------------
+   BACK TO TOP
+---------------------------------------------------------------- */
+#backToTop{
+  position:fixed; bottom:1.8rem; right:1.8rem;
+  width:46px; height:46px; border-radius:50%;
+  background:var(--bg-panel-2);
+  border:1px solid var(--line);
+  color:var(--accent);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.3s ease, transform 0.3s ease, border-color 0.3s ease;
+  z-index:45;
+}
+#backToTop.show{ opacity:1; pointer-events:auto; }
+#backToTop:hover{ transform:translateY(-3px); border-color:var(--accent); }
+
+/* ----------------------------------------------------------------
+   FOOTER
+---------------------------------------------------------------- */
+footer{
+  padding:3rem 0 2.2rem;
+  border-top:1px solid var(--line);
+}
+.footer-inner{
+  display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;
+  font-family:var(--font-mono); font-size:0.78rem; color:var(--text-faint);
+}
+.footer-links{ display:flex; gap:1.4rem; }
+.footer-links a:hover{ color:var(--accent); }
+
+/* Toast for copy-email */
+#toast{
+  position:fixed; bottom:1.8rem; left:50%; transform:translateX(-50%) translateY(20px);
+  background:var(--bg-panel-2);
+  border:1px solid var(--accent);
+  color:var(--text);
+  padding:0.7rem 1.2rem;
+  border-radius:8px;
+  font-family:var(--font-mono); font-size:0.82rem;
+  opacity:0; pointer-events:none;
+  transition:opacity 0.25s ease, transform 0.25s ease;
+  z-index:70;
+}
+#toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+@media (max-width:600px){
+  section{ padding:4.5rem 0; }
+  .fact-grid{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- Mobile scroll progress -->
+<div id="mobileProgress"></div>
+
+<!-- Signal trace (desktop signature element) -->
+<div id="signalTrace" aria-hidden="true">
+  <svg viewBox="0 0 44 800" preserveAspectRatio="none">
+    <path id="tracePath" d="M22,0
+      L22,60 L14,70 L30,90 L22,100
+      L22,220 L14,230 L30,250 L22,260
+      L22,420 L14,430 L30,450 L22,460
+      L22,600 L14,610 L30,630 L22,640
+      L22,800"/>
+  </svg>
+</div>
+
+<!-- ============================================================
+     NAVIGATION
+============================================================ -->
+<header id="site-nav">
+  <div class="nav-inner">
+    <a href="#hero" class="brand">SK<span>.</span></a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#hero" class="nav-link" data-target="hero">Home</a>
+      <a href="#profile" class="nav-link" data-target="profile">Profile</a>
+      <a href="#education" class="nav-link" data-target="education">Education</a>
+      <a href="#certifications" class="nav-link" data-target="certifications">Certifications</a>
+      <a href="#contact" class="nav-link" data-target="contact">Contact</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<section id="hero">
+  <canvas id="neuralCanvas" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <p class="eyebrow">ML ENGINEER — COIMBATORE</p>
+    <h1 class="hero-name">Santhosh Kumar K</h1>
+    <p class="hero-role">// building machine learning systems, one signal at a time</p>
+    <div class="hero-meta">
+      <span><i class="dot"></i>Coimbatore, India</span>
+      <span><i class="dot"></i>B.Tech AI &amp; ML, 2025</span>
+    </div>
+    <div class="btn-row">
+      <a href="#contact" class="btn btn-primary">Contact Me</a>
+      <a href="https://www.linkedin.com/in/santhosh-kumar-k-397597393?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener" class="btn btn-ghost">LinkedIn ↗</a>
+      <a href="https://github.com/Santhosh1815-SK" target="_blank" rel="noopener" class="btn btn-ghost">GitHub ↗</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><span class="line"></span>SCROLL</div>
+</section>
+
+<!-- ============================================================
+     PROFILE / ABOUT
+============================================================ -->
+<section id="profile">
+  <div class="wrap">
+    <p class="eyebrow">01 — PROFILE</p>
+    <div class="profile-grid" style="margin-top:1.5rem;">
+      <div class="reveal">
+        <p class="trait-word">Optimistic</p>
+        <p class="trait-caption">The way Santhosh describes himself, in his own word.</p>
+      </div>
+      <div class="fact-grid reveal-stagger">
+        <div class="fact-card">
+          <p class="fact-label">Location</p>
+          <p class="fact-value">Coimbatore, India</p>
+        </div>
+        <div class="fact-card">
+          <p class="fact-label">Languages</p>
+          <p class="fact-value">Tamil, Telugu</p>
+        </div>
+        <div class="fact-card">
+          <p class="fact-label">Hobbies</p>
+          <p class="fact-value">Sports</p>
+        </div>
+        <div class="fact-card">
+          <p class="fact-label">Interests</p>
+          <p class="fact-value">Technical fields</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     EDUCATION
+============================================================ -->
+<section id="education">
+  <div class="wrap">
+    <p class="eyebrow">02 — EDUCATION</p>
+    <h2 class="section-title reveal">Academic background</h2>
+    <div class="timeline reveal">
+      <div class="timeline-item">
+        <span class="timeline-year">2025</span>
+        <div class="timeline-card">
+          <h3>B.Tech, Artificial Intelligence &amp; Machine Learning</h3>
+          <p class="org">Sri Shakthi Institute of Engineering and Technology</p>
+          <div class="stat-row">
+            <div class="stat"><b>7.5</b>CGPA</div>
+            <div class="stat"><b>2025</b>Year of completion</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CERTIFICATIONS
+============================================================ -->
+<section id="certifications">
+  <div class="wrap">
+    <p class="eyebrow">03 — CERTIFICATIONS</p>
+    <h2 class="section-title reveal">Certifications</h2>
+    <div class="reveal">
+      <div class="cert-card">
+        <div class="cert-icon">✓</div>
+        <div class="cert-main">
+          <h3>Mobile Troubleshooting</h3>
+          <p class="org">New Technology</p>
+        </div>
+        <div class="cert-year">2023</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CONTACT
+============================================================ -->
+<section id="contact">
+  <div class="wrap">
+    <p class="eyebrow">04 — CONTACT</p>
+    <h2 class="section-title reveal">Let's talk</h2>
+    <div class="contact-grid reveal-stagger">
+      <div class="contact-card">
+        <p class="contact-label">Email</p>
+        <p class="contact-value">santhoshkumar2007th@gmail.com</p>
+        <button class="contact-action" id="copyEmailBtn">Copy email ⧉</button>
+      </div>
+      <div class="contact-card">
+        <p class="contact-label">Phone</p>
+        <p class="contact-value">+91 90033 50486</p>
+        <a class="contact-action" href="tel:+919003350486">Call →</a>
+      </div>
+      <div class="contact-card">
+        <p class="contact-label">LinkedIn</p>
+        <p class="contact-value">santhosh-kumar-k</p>
+        <a class="contact-action" href="https://www.linkedin.com/in/santhosh-kumar-k-397597393?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener">Visit profile →</a>
+      </div>
+      <div class="contact-card">
+        <p class="contact-label">GitHub</p>
+        <p class="contact-value">Santhosh1815-SK</p>
+        <a class="contact-action" href="https://github.com/Santhosh1815-SK" target="_blank" rel="noopener">View repos →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer>
+  <div class="wrap footer-inner">
+    <span id="footerText">© Santhosh Kumar K</span>
+    <div class="footer-links">
+      <a href="mailto:santhoshkumar2007th@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/santhosh-kumar-k-397597393?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://github.com/Santhosh1815-SK" target="_blank" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+<button id="backToTop" aria-label="Back to top">↑</button>
+<div id="toast" role="status" aria-live="polite">Email copied</div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+(function(){
+  "use strict";
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------------- Footer year ---------------- */
+  document.getElementById('footerText').textContent =
+    '© ' + new Date().getFullYear() + ' Santhosh Kumar K';
+
+  /* ---------------- Nav: scroll shadow + mobile toggle ---------------- */
+  var nav = document.getElementById('site-nav');
+  var hamburger = document.getElementById('hamburger');
+  var navLinks = document.getElementById('navLinks');
+
+  hamburger.addEventListener('click', function(){
+    var open = navLinks.classList.toggle('open');
+    hamburger.classList.toggle('open', open);
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+  navLinks.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){
+      navLinks.classList.remove('open');
+      hamburger.classList.remove('open');
+      hamburger.setAttribute('aria-expanded','false');
+    });
+  });
+
+  /* ---------------- Scroll progress + nav shadow + active link ---------------- */
+  var sections = Array.prototype.slice.call(document.querySelectorAll('section[id]'));
+  var navLinkEls = Array.prototype.slice.call(document.querySelectorAll('.nav-link'));
+  var mobileProgress = document.getElementById('mobileProgress');
+  var tracePath = document.getElementById('tracePath');
+  var backToTop = document.getElementById('backToTop');
+
+  function onScroll(){
+    var scrollTop = window.scrollY;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+    mobileProgress.style.width = pct + '%';
+    nav.classList.toggle('scrolled', scrollTop > 12);
+    backToTop.classList.toggle('show', scrollTop > 500);
+
+    // signal trace "active" glow grows with scroll (stroke-dasharray reveal)
+    var len = tracePath.getTotalLength();
+    tracePath.style.strokeDasharray = len;
+    tracePath.style.strokeDashoffset = len - (len * (pct/100));
+    tracePath.classList.add('active');
+
+    // active nav link based on section in view
+    var current = sections[0].id;
+    sections.forEach(function(sec){
+      var rect = sec.getBoundingClientRect();
+      if (rect.top <= 120) current = sec.id;
+    });
+    navLinkEls.forEach(function(link){
+      link.classList.toggle('active', link.dataset.target === current);
+    });
+  }
+  document.addEventListener('scroll', onScroll, { passive:true });
+  onScroll();
+
+  backToTop.addEventListener('click', function(){
+    window.scrollTo({ top:0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  });
+
+  /* ---------------- Reveal on scroll ---------------- */
+  var revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+  if ('IntersectionObserver' in window && !reduceMotion){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add('in');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold:0.15 });
+    revealEls.forEach(function(el){ io.observe(el); });
+  } else {
+    revealEls.forEach(function(el){ el.classList.add('in'); });
+  }
+
+  /* ---------------- Copy email ---------------- */
+  var copyBtn = document.getElementById('copyEmailBtn');
+  var toast = document.getElementById('toast');
+  copyBtn.addEventListener('click', function(){
+    var email = 'santhoshkumar2007th@gmail.com';
+    var done = function(){
+      toast.classList.add('show');
+      setTimeout(function(){ toast.classList.remove('show'); }, 1800);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(email).then(done).catch(done);
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = email;
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch(e){}
+      document.body.removeChild(ta);
+      done();
+    }
+  });
+
+  /* ---------------- Neural network hero canvas ---------------- */
+  var canvas = document.getElementById('neuralCanvas');
+  var ctx = canvas.getContext('2d');
+  var hero = document.getElementById('hero');
+  var nodes = [];
+  var mouse = { x:null, y:null };
+  var W, H;
+
+  function resize(){
+    W = canvas.width = hero.clientWidth;
+    H = canvas.height = hero.clientHeight;
+    var count = Math.min(70, Math.floor((W*H)/22000));
+    nodes = [];
+    for (var i=0;i<count;i++){
+      nodes.push({
+        x: Math.random()*W,
+        y: Math.random()*H,
+        vx: (Math.random()-0.5)*0.25,
+        vy: (Math.random()-0.5)*0.25,
+        r: Math.random()*1.6+0.6
+      });
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    var maxDist = 130;
+
+    for (var i=0;i<nodes.length;i++){
+      var n = nodes[i];
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+
+      // subtle pull toward cursor
+      if (mouse.x !== null){
+        var dx = mouse.x - n.x, dy = mouse.y - n.y;
+        var d = Math.sqrt(dx*dx+dy*dy);
+        if (d < 160){
+          n.x += dx*0.0025; n.y += dy*0.0025;
+        }
+      }
+    }
+
+    for (var i=0;i<nodes.length;i++){
+      for (var j=i+1;j<nodes.length;j++){
+        var a = nodes[i], b = nodes[j];
+        var dx = a.x-b.x, dy = a.y-b.y;
+        var dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < maxDist){
+          ctx.strokeStyle = 'rgba(79,216,196,' + (0.16 * (1 - dist/maxDist)) + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x,a.y);
+          ctx.lineTo(b.x,b.y);
+          ctx.stroke();
+        }
+      }
+    }
+    for (var i=0;i<nodes.length;i++){
+      var n = nodes[i];
+      ctx.fillStyle = 'rgba(140,158,255,0.75)';
+      ctx.beginPath();
+      ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
+      ctx.fill();
+    }
+    if (!reduceMotion) requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  hero.addEventListener('mousemove', function(e){
+    var rect = hero.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+  });
+  hero.addEventListener('mouseleave', function(){ mouse.x = null; mouse.y = null; });
+
+  resize();
+  if (reduceMotion){ draw(); } else { requestAnimationFrame(draw); }
+})();
+</script>
+</body>
+</html>
